@@ -52,63 +52,21 @@ opacity: .75;
 <body onload='init()'>
 
 
-<font style="font-size:11px;">Select State:</font>
-<select id="selectbox1">
-<option value="Alaska">Alaska</option>
-<option value="Arizona">Arizona</option>
-<option value="Arkansas">Arkansas</option>
-<option value="California">California</option>
-<option value="Colorado">Colorado</option>
-<option value="Connecticut">Connecticut</option>
-<option value="Delaware">Delaware</option>
-<option value="Florida">Florida</option>
-<option value="Georgia">Georgia</option>
-<option value="Hawaii">Hawaii</option>
-<option value="Idaho">Idaho</option>
-<option value="Illinois">Illinois</option>
-<option value="Indiana">Indiana</option>
-<option value="Iowa">Iowa</option>
-<option value="Kansas">Kansas</option>
-<option value="Kentucky">Kentucky</option>
-<option value="Louisiana">Louisiana</option>
-<option value="Maine">Maine</option>
-<option value="Maryland">Maryland</option>
-<option value="Massachusetts">Massachusetts</option>
-<option value="Michigan">Michigan</option>
-<option value="Minnesota">Minnesota</option>
-<option value="Mississippi">Mississippi</option>
-<option value="Missouri">Missouri</option>
-<option value="Montana">Montana</option>
-<option value="Nebraska">Nebraska</option>
-<option value="Nevada">Nevada</option>
-<option value="New Hampshire">New Hampshire</option>
-<option value="New Jersey">New Jersey</option>
-<option value="New Mexico">New Mexico</option>
-<option value="New York">New York</option>
-<option value="North Carolina">North Carolina</option>
-<option value="North Dakota">North Dakota</option>
-<option value="Ohio">Ohio</option>
-<option value="Oklahoma">Oklahoma</option>
-<option value="Oregon">Oregon</option>
-<option value="Pennsylvania">Pennsylvania</option>
-<option value="South Carolina">South Carolina</option>
-<option value="South Dakota">South Dakota</option>
-<option value="Tennessee">Tennessee</option>
-<option value="Texas">Texas</option>
-<option value="Utah">Utah</option>
-<option value="Vermont">Vermont</option>
-<option value="Virgin Islands">Virgin Islands</option>
-<option value="Virginia">Virginia</option>
-<option value="Washington">Washington</option>
-<option value="West Virginia">West Virginia</option>
-<option value="Wisconsin">Wisconsin</option>
-<option value="Wyoming">Wyoming</option>
-</select>
 
-<svg  width=1200 height=410></svg>
+
+<svg  width=700 height=350></svg>
 
 <script><!--
-var height=415;
+const queryString = window.location.search;
+console.log(queryString);
+
+const urlParams = new URLSearchParams(queryString);
+console.log(urlParams);
+
+var state = urlParams.get('Province_State')
+console.log(state);
+
+var height=315;
 var width = 850;
 d3.select("svg").style("background-color", "black");
 
@@ -135,8 +93,8 @@ function chartConfirmed(data) {
 	
 	var svg = d3.select("svg");
 	var margin = {top: 15, right: 35, bottom: 15, left: 35};
-	var width = 1000;
-	var height = 385;
+	var width = 700;
+	var height = 325;
 	
 	var x = d3.scaleTime()
 	 .rangeRound([margin.left, width - margin.right])
@@ -185,10 +143,10 @@ function chartConfirmed(data) {
 	var overlay = svg.append("rect")
 	.attr("class", "overlay")
 	.attr("x", 35)
-	.attr("width", 950)
-	.attr("height", 400)
+	.attr("width", 800)
+	.attr("height", 250)
 	
-	update1(d3.select('#selectbox1').property('value'), 0);
+	update1(state, 0);
 	    var confirmedCases;
 	function update1(input, speed) {
 	
@@ -207,7 +165,7 @@ function chartConfirmed(data) {
 		]).nice();
 		var try1 = svg.selectAll(".y-axis").transition()
 		.duration(speed)
-		.call(d3.axisLeft(y).tickFormat(d3.format("~s")).tickSize(-930));
+		.call(d3.axisLeft(y).tickFormat(d3.format("~s")).tickSize(-630));
 		//    .call(d3.axisLeft(y).tickFormat(d3.format("~s")).tickSize(-1130)).attr("class","axisBlue");
 		
 		 try1.selectAll("line").style("stroke", "silver");
@@ -290,7 +248,7 @@ function chartConfirmed(data) {
 			focus.selectAll(".lineHoverText")
 			.attr("transform",
 			"translate(" + (x(d.Date)) + "," + 385 / 2.5 + ")").style("fill","skyblue")
-			.text(e => e + " on " + myDate(d.Date) + ": New cases: " +(formatIntValue(da1[e])- formatIntValue(da0[e])) +". Total: " +formatValue(d[e])+".");
+			.text(e => e + " on " + myDate(d.Date) + ": New Cases: " +(formatIntValue(da1[e])- formatIntValue(da0[e])) +". Total: " +formatValue(d[e])+".");
 			
 			x(d.Date) > (width - width / 4)
 			? focus.selectAll("text.lineHoverText")
@@ -303,9 +261,6 @@ function chartConfirmed(data) {
 		}
 	}
 	
-	var selectbox = d3.select("#selectbox1").on("change", function() {
-		update1(this.value, 750);
-	});
 }
 
 
