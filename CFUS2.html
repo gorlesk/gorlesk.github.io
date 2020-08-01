@@ -1,0 +1,55 @@
+<html>
+<head>
+ <meta charset = "UTF-8">
+ <title>externalStyle.html</title>
+ <link rel = "stylesheet"
+   type = "text/css"
+   href = "index.css" />
+
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<style>
+
+</style>
+ </head>
+ 
+<body>
+<script>
+
+const queryString = window.location.search;
+console.log(queryString);					
+const urlParams = new URLSearchParams(queryString);
+console.log(urlParams);				
+var state = urlParams.get('Province_State')
+console.log(state);
+
+</script>
+<div class="header">    
+  <h1>Covid Financial impact in USA</h1>
+</div>
+<div>
+	<div style="background-color: black;" >
+		<iframe id="if1" frameborder="0" height="45%" width="100%" scrolling="no"> </iframe>
+	</div>
+	
+	<div style="background-color: black;" >
+		<iframe id="if2" frameborder="0" height="45%" width="100%" scrolling="no"> </iframe>
+	</div>
+</div>
+<script>
+
+function nextSceneURL(){
+	var url1="CovidDeathActive.html?Province_State="+state;
+	console.log("1"+url1);
+	document.getElementById("if1").setAttribute("src", url1);
+
+	var url2= "FDebtPop.html?Province_State="+state;
+	document.getElementById("if2").setAttribute("src", url2);
+	
+}
+nextSceneURL();
+</script>
+</script>
+
+</body>
+</html>

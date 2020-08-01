@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<style><!--
+
+body {
+margin:left;
+width: 885px;
+padding: 25px;
+}
+.y-axis line {
+opacity:.2;
+fill: green;
+}
+.y-axis path {
+display:none;
+}
+.yaxis line {
+opacity:.2;
+}
+.yaxis path {
+display:none;
+fill: red;
+}
+.line {
+fill: none;
+opacity:.75;
+}
+.overlay {
+fill: none;
+pointer-events: all;
+}
+
+.hoverCircle {
+opacity: .75;
+}
+.axisBlue text{
+  fill: skyblue;
+}
+
+.axisBlue line{
+  stroke: skyblue;
+}
+
+.axisBlue path{
+  stroke: skyblue;
+}
+
+--></style>
+</head>
+
+<body onload='init()'>
+
+<svg  width=700 height=350></svg>
+
+<script><!--
+const queryString = window.location.search;
+console.log(queryString);
+
+const urlParams = new URLSearchParams(queryString);
+console.log(urlParams);
+
+var state = urlParams.get('Province_State')
+console.log(state);
+
+var height=315;
+var width = 850;
+d3.select("svg").style("background-color", "black");
+
+async function init() {
+	var margin = 50;
+	var height = 400;
+	const dataD = await d3.csv('https://raw.githubusercontent.com/gorlesk/CFSUS/master/Covid19_Deaths_US_0714.csv');
+	chartDeath(dataD);
+}
+
+function chartDeath(data) {
+
+	var keys1 = data.columns.slice(1);
+	
+	var parseTime = d3.timeParse("%m%d"), formatDate = d3.timeFormat("%Y-%m-%d"), myDate = d3.timeFormat("%d/%b/%Y"),
+	bisectDate = d3.bisector(d => d.Date).left, formatIntValue = d3.format("d"), formatValue = d3.format(",d"), displayFormat = d3.timeFormat("%a %d %b");
+	var parser = d3.timeParse("%m/%d/%Y");
+	
+	data.forEach(function(d) {
+		d.Date = parser(d.Date);
+		// console.log(d.Date);
+		return d;
+	})
+	
+	var svg = d3.select("svg");
+	var margin = {top: 15, right: 35, bottom: 15, left: 35};
+	var width = 700;
+	var height = 325;
+	
+	var x = d3.scaleTime()
+	 .rangeRound([margin.left, width - margin.right])
+	//.rangeRound([35, 1165])
+	.domain(d3.extent(data, d => d.Date));
+	
+	
+	var y = d3.scaleLinear()
+	.rangeRound([height - margin.bottom, margin.top]);
+	//   .rangeRound([370, 15]);
+	
+	var z = d3.scaleOrdinal(d3.schemeCategory10);
+	
+	var line = d3.line()
+	.curve(d3.curveCardinal)
+	.x(d => x(d.Date))
+	.y(d => y(d.degrees));
+	
+	svg.append("g")
+	.attr("class","x-axis")
+	.attr("transform", "translate(0," + (height - margin.bottom) + ")")
+	//.attr("transform", "translate(0," + 370 + ")")
+	.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b"))).attr("class", "axisBlue");
+	
+	svg.append("g")
+	.attr("class", "y-axis")
+	.attr("transform", "translate(" + margin.left + ",0)");
+	//    .attr("transform", "translate(" + 35 + ",0)");
+	
+	var focus = svg.append("g")
+	.attr("class", "focus")
+	.style("display", "none").style("fill","skyblue");
+	
+	focus.append("line").attr("class", "lineHover")
+	.style("stroke", "red")
+	.attr("stroke-width", 1)
+	.style("shape-rendering", "crispEdges")
+	.style("opacity", 0.5)
+	.attr("y1", -400)
+	.attr("y2",0);
+	
+	focus.append("text").attr("class", "lineHoverDate")
+	.attr("text-anchor", "start").style("fill","skyblue")
+	.attr("font-size", 14);
+	
+	var overlay = svg.append("rect")
+	.attr("class", "overlay")
+	.attr("x", 35)
+	.attr("width", 800)
+	.attr("height", 250)
+	
+	update1(state, 0);
+	    var confirmedCases;
+	function update1(input, speed) {
+	
+	var ccopy = keys1.filter(f => f.includes(input))
+	
+		confirmedCases = ccopy.map(function(id) {
+			return {
+				id: id,
+				values: data.map(d => {return {Date: d.Date, degrees: +d[id]}})
+			};
+		});
+		
+		y.domain([
+			d3.min(confirmedCases, d => d3.min(d.values, c => c.degrees)),
+			d3.max(confirmedCases, d => d3.max(d.values, c => c.degrees))
+		]).nice();
+		var try1 = svg.selectAll(".y-axis").transition()
+		.duration(speed)
+		.call(d3.axisLeft(y).tickFormat(d3.format("~s")).tickSize(-630));
+		//    .call(d3.axisLeft(y).tickFormat(d3.format("~s")).tickSize(-1130)).attr("class","axisBlue");
+		
+		 try1.selectAll("line").style("stroke", "silver");
+		
+		 //try1.selectAll("path").style("stroke", "green");
+		
+		 try1.selectAll("text").style("fill", "skyblue");
+		 //try1.selectAll("text").style("font-size", 6);
+		 try1.selectAll("text").style("font-weight", "normal");
+		 
+		         
+		 var cData = svg.selectAll(".confirmedCases").data(confirmedCases);
+		
+		cData.exit().remove();
+		
+		cData.enter().insert("g", ".focus").append("path")
+		.attr("class", "line confirmedCases").attr("width", 760).attr("height", 400)
+		.style("stroke","white") //todo
+		.merge(cData)
+		.transition().duration(speed)
+		.attr("d", d => line(d.values));
+		tooltip1(ccopy);
+		//cData.exit().remove();
+	
+	}
+	
+	function tooltip1(copy) {
+	
+		var labels = focus.selectAll(".lineHoverText")
+		.data(copy)
+		
+		labels.enter().append("text")
+		.attr("class", "lineHoverText")
+		.style("fill", d => z(d))
+		.attr("text-anchor", "start")
+		.attr("font-size",12)
+		.attr("dy", (_, i) => 1 + i * 2 + "em").style("fill","skyblue")
+		.merge(labels);
+		
+		var circles = focus.selectAll(".hoverCircle")
+		.data(copy)
+		
+		circles.enter().append("circle")
+		.attr("class", "hoverCircle")
+		.style("fill", d => z(d))
+		.attr("r", 2.5)
+		.merge(circles);
+		
+		svg.selectAll(".overlay")
+		.on("mouseover", function() { focus.style("display", null); })
+		.on("mouseout", function() { focus.style("display", "none"); })
+		.on("mousemove", mousemove1);
+		
+		function mousemove1() {
+		
+			var x0 = x.invert(d3.mouse(this)[0]),
+			i = bisectDate(data, x0, 1);
+			parser(data.Date);
+			var da1 = data[i];
+			var da0 = data[i - 1];
+			console.log("d0 "+da0.Date);
+			console.log("d1 "+da1.Date);
+			
+			var d = (x0 - x(da0.Date)) > (x(da1.Date) - x0) ? (da1) : (da0);
+			            //d = da1;
+			           
+			//console.log(myDate(d.Date));
+			focus.select(".lineHover")
+			.attr("transform", "translate(" + x(d.Date) + "," + 385 + ")");
+			
+			focus.select(".lineHoverDate")
+			.attr("transform",
+			"translate(" + x(d.Date) + "," + (400) + ")").attr("font-size",12)
+			.text(formatDate(d.Date));
+			
+			focus.selectAll(".hoverCircle")
+			.attr("cy", e => y(d[e]))
+			.attr("cx", x(d.Date)).style("fill","skyblue");
+			
+			focus.selectAll(".lineHoverText")
+			.attr("transform",
+			"translate(" + (x(d.Date)) + "," + 385 / 2.5 + ")").style("fill","skyblue")
+			.text(e => e + " on " + myDate(d.Date) + ": New Deaths: " +(formatIntValue(da1[e])- formatIntValue(da0[e])) +". Total: " +formatValue(d[e])+".");
+			
+			x(d.Date) > (width - width / 4)
+			? focus.selectAll("text.lineHoverText")
+			.attr("text-anchor", "end")
+			.attr("dx", -10)
+			: focus.selectAll("text.lineHoverText")
+			.attr("text-anchor", "start")
+			.attr("dx", 10);
+		
+		}
+	}
+	
+
+}
+
+
+--></script>
+</body>

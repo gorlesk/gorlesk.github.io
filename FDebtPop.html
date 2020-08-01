@@ -8,21 +8,19 @@
 
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
-<script>
+<style>
 
-</script>
+</style>
  </head>
  
 <body onload='init()'>
 
 <div class="text1">
-  <h3>Overview of Covid daths vs Debt in USA</h3>
+  <h3>Overview of US State Debt and Population</h3>
 </div> 
-
 <svg width=900 height=330>
 </svg>
 <script>
-console.log(">> ");
 const queryString = window.location.search;
 console.log(queryString);
 
@@ -30,7 +28,7 @@ const urlParams = new URLSearchParams(queryString);
 console.log(urlParams);
 
 var state = urlParams.get('Province_State')
-console.log("script"+state);
+console.log(state);
 
 async function init() {
 	var margin = 50;
@@ -56,7 +54,7 @@ var xScale = d3.scaleLog()
 
 var yScale = d3.scaleLog()
        .domain([5,35000])
-       .range([250,0])
+       .range([400,0])
        .base(10);
 
 
@@ -71,16 +69,37 @@ var myFormat=d3.timeFormat("~s");
 var p = d3.precisionPrefix(1e3, 1.3e4);
 
 
-var canvas = d3.select('svg').append("g")
-.attr("transform","translate(50,50)")
-.attr("background-color", 'black');
 
-canvas.selectAll('circle').data(data)
-.enter().append('circle').attr("cy", function(d) {return yScale(d.Deaths) ;})
-.attr("cx", function(d) {return xScale(d.Confirmed) ;})	
-.attr("r",function(d)    {return  rScale(d.Active);})
-.style("fill","black").style("stroke-width", 2)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+xScale = d3.scaleLog()
+      .domain([500000,50000000])
+      .range([0, 800])
+      .base(10);
+
+yScale = d3.scaleLog()
+       .domain([700000, 200000000])
+       .range([250,0])
+       .base(100);
+
+
+var rScale= d3.scaleSqrt();
+rScale.domain([6,24]).range([1, 14]);
+
+xTickValues = [500000, 1000000, 2000000, 5000000, 10000000, 20000000, 50000000];
+yTickValues = [700000, 1000000, 2000000, 5000000, 10000000, 20000000, 50000000, 100000000, 200000000, 200000000];
+
+       
+d3.select('svg').append("g")
+.attr("transform","translate(50,50)").attr("background-color", 'black')
+.selectAll('circle').data(data)
+.enter().append('circle')
+//.attr("cx", function(d) {console.log ("<option value=\""+d.Province_State+"\">"+d.Province_State+"</option>"); return xScale(d.Pop) ;})	
+.attr("cx", function(d) { return xScale(d.Pop) ;})	
+.attr("cy", function(d) { return yScale(d.Debt) ;})
+.attr("r",function(d)    {return  rScale(d['State and Local Debt']);})
+.style("fill","black")
 .style("stroke", "white")
+.style("stroke-width", 2)
 .on("mouseover", function(d) {
 	   debt = myFormat(d.Debt);
        div.transition()
@@ -88,7 +107,7 @@ canvas.selectAll('circle').data(data)
          .style("opacity", .9);
        div.html(
          //"<b>"+d.Province_State+ "</b>" + "<br/>" + "Confirmed: " + d3.formatPrefix("." + p, 1.3e5)(d.Confirmed)+ "<br/>"+ "Active: " + d3.formatPrefix("." + p, 1.3e5)(d.Active) +"<br/>"+ "Deaths: " +d3.formatPrefix("." + p, 1.3e5) (d.Deaths))    
-         "<b>"+d.Province_State+ "</b>" + "<br/>" + "Confirmed: " + (d.Confirmed)+ "<br/>"+ "Active: " +(d.Active) +"<br/>"+ "Deaths: " +(d.Deaths))    
+         "<b>"+d.Province_State+ "</b>" + "<br/>" + "Population: " + d3.formatPrefix("." + p, 1.3e6)(d.Pop)+ "<br/>"+ "Debt in $: " +d3.formatPrefix("." + p, 1.3e6)(d.Debt) +"<br/>")    
          .style("left", (d3.event.pageX+10) + "px")             
          .style("top", (d3.event.pageY - 15) + "px");
        })
@@ -97,35 +116,30 @@ div
 .transition()
 .duration(50)
 .style('opacity', 1);
-});
+}); 
 
-console.log("94"+state);
 
 d3.select('svg').append("g")
 .attr("transform","translate(50,50)").attr("background-color", 'black')
 .selectAll('circle').data(data)
 .enter().append('circle')
 .attr("cy", function(d) { 
-    if (d.Province_State == state) {return yScale(d.Deaths)};})
-.attr("cx", function(d) {    if (d.Province_State == state) {return xScale(d.Confirmed)};})
-.attr("r",function(d)    {if (d.Province_State == state) return  rScale(d.Active);})
+    if (d.Province_State == state) {return yScale(d.Debt)};})
+.attr("cx", function(d) {    if (d.Province_State == state) {return xScale(d.Pop)};})
+.attr("r",function(d)    {if (d.Province_State == state) return  rScale(d['State and Local Debt']);})
 //.style("fill","skyblue")
 .style("fill", function(d) {
       if (d.Province_State == state) {return "skyblue"}
       ;})
 //.style("stroke", "white")
 .style("stroke", function(d) {
-      if (d.Province_State == state) {console.log("red"+state); return "red"}
+      if (d.Province_State == state) {return "red"}
       ;})
 .style("stroke-width", 2)
 .on('click',function(d)  {
     if(d.Province_State == state)
-    {   console.log("nextPage"+state);
-        var my_url="CovidPerDayDeaths.html?Province_State="+d.Province_State;
-        //window.location.href="CovidPerDayDeaths.html?Province_State="+d.Province_State;
-        
-        window.top.location.href=my_url;
-        //window.parent.location.href=my_url;
+    {   
+        window.location.replace("CovidPerDayDeaths.html?Province_State="+d.Province_State);
     }
 })
 .on("mouseover", function(d) {
@@ -135,7 +149,7 @@ d3.select('svg').append("g")
          .style("opacity", .9);
        div.html(
          //"<b>"+d.Province_State+ "</b>" + "<br/>" + "Confirmed: " + d3.formatPrefix("." + p, 1.3e5)(d.Confirmed)+ "<br/>"+ "Active: " + d3.formatPrefix("." + p, 1.3e5)(d.Active) +"<br/>"+ "Deaths: " +d3.formatPrefix("." + p, 1.3e5) (d.Deaths))    
-         "<b>"+d.Province_State+ "</b>" + "<br/>" + "Confirmed: " + (d.Confirmed)+ "<br/>"+ "Active: " +(d.Active) +"<br/>"+ "Deaths: " +(d.Deaths))    
+         "<b>"+d.Province_State+ "</b>" + "<br/>" + "Population: " + d3.formatPrefix("." + p, 1.3e6)(d.Pop)+ "<br/>"+ "Debt in $: " +d3.formatPrefix("." + p, 1.3e6)(d.Debt) +"<br/>")    
          .style("left", (d3.event.pageX+10) + "px")             
          .style("top", (d3.event.pageY - 15) + "px");
        })
@@ -145,14 +159,12 @@ div
 .duration(50)
 .style('opacity', 1);
 })
-; 
-
+;
 // text label for the x axis
 d3.select('svg').append("text")             
     .attr("transform",
-          "translate(" + (width/2) + " ," + 
-                         (320) + ")")
-.text("Covid Confirmed")
+          "translate(" + (width/2+60)+ " ," + (325) + ")")
+.text("Population")
 .style('font-size', '17px')
 .style('font-family', '"Open Sans", sans-serif')
 .style('font-weight', 'bold').style("fill","skyblue");
@@ -162,33 +174,26 @@ d3.select('svg').append("text")
 d3.select('svg').append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0)
-    .attr("x",0 - (height / 2)-25)
+    .attr("x",0 - (220))
     .attr("dy", "1em")
-.text("Covid Deaths")     
+.text("State Debt in $")     
 .style('font-size', '17px')
 .style('font-family', '"Open Sans", sans-serif')
 .style('font-weight', 'bold').style("fill","skyblue");
 
 
-var xTickValues = [200, 2500, 25000, 250000];
-var yTickValues = [5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 35000];
-
-const xAxisGrid = d3.axisBottom(xScale).tickSize(-1000).tickFormat('').ticks(4);
-const yAxisGrid = d3.axisLeft(yScale).tickSize(-1000).tickFormat('').ticks(2);
-
-
-var y_axis = d3.axisLeft().scale(yScale).tickValues(yTickValues).tickFormat(d3.format("~s"));
-
+y_axis = d3.axisLeft().scale(yScale).tickValues(yTickValues).tickFormat(d3.format("~s"));
 d3.select("svg")
    .append("g")
-   .attr("transform","translate("+margin.bottom+","+margin.bottom+")")
+   .attr("transform","translate("+margin.bottom+","+(margin.bottom)+")")   
    .call(y_axis).style("stroke", "skyblue").attr("class", "axisBlue");
      
-var x_axis = d3.axisBottom().scale(xScale).tickValues(xTickValues).tickFormat(d3.format("~s"));
+x_axis = d3.axisBottom().scale(xScale).tickValues(xTickValues).tickFormat(d3.format("~s"));
 d3.select("svg")
    .append("g")
    .attr("transform","translate("+margin.bottom+","+(300)+")")
    .call(x_axis).style("stroke", "skyblue").attr("class", "axisBlue");
+
 
 }
 </script>

@@ -1,53 +1,137 @@
 <html>
+<head>
+ <meta charset = "UTF-8">
+ <title>externalStyle.html</title>
+ <link rel = "stylesheet"
+   type = "text/css"
+   href = "index.css" />
+
 <script src='https://d3js.org/d3.v5.min.js'></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 <style>
 
-.axisBlue text{
-  fill: skyblue;
-} 
-
-.axisBlue line{
-  stroke: skyblue;
-}
-
-.axisBlue path{
-  stroke: skyblue;
-}
-
-div.tooltip {
-  position: absolute;
-  text-align: center;
-  width: 130px;
-  height: 60px;
-  padding: 2px;
-  font: 14px sans-serif;
-  background: skyblue;
-  border: 0px;
-  border-radius: 8px;
-}
-
 </style>
+ </head>
+ 
 <body onload='init()'>
-<svg width=900 height=900>
-</svg>
+<div class="header">    
+  <h1>Covid Financial impact in USA</h1>
+</div>
+
+<div class="text1">
+  <h3>Overview of Covid deaths vs Debt in USA</h3>
+</div> 
+<div class="row">
+	<div class="leftcolumn">
+		<div class="card" style="text-align:center" >       	    
+			<svg width=900 height=750>
+			<text style="font-size:16px;" class="specialColor" fill="skyblue" class="title" x=70 y=50>Hover over the circles to see more information</text>
+			<text style="font-size:16px;" class="specialColor" fill="skyblue" x=70 y=80>Select a state to start navigation. </text>
+			</svg> 
+		</div>     
+	</div>
+	<div class="rightcolumn">
+		<input id ="b1" type="button" onclick="NextPage()" style="float:right" class="button" value=" Next ">
+		<select id="selectbox1" class="button button5" style="float:right">
+		<option  value="none" selected disabled hidden > 
+		    Select State 
+		</option>
+		<option value="Alaska">Alaska</option>
+		<option value="Arizona">Arizona</option>
+		<option value="Arkansas">Arkansas</option>
+		<option value="California">California</option>
+		<option value="Colorado">Colorado</option>
+		<option value="Connecticut">Connecticut</option>
+		<option value="Delaware">Delaware</option>
+		<option value="Florida">Florida</option>
+		<option value="Georgia">Georgia</option>
+		<option value="Hawaii">Hawaii</option>
+		<option value="Idaho">Idaho</option>
+		<option value="Illinois">Illinois</option>
+		<option value="Indiana">Indiana</option>
+		<option value="Iowa">Iowa</option>
+		<option value="Kansas">Kansas</option>
+		<option value="Kentucky">Kentucky</option>
+		<option value="Louisiana">Louisiana</option>
+		<option value="Maine">Maine</option>
+		<option value="Maryland">Maryland</option>
+		<option value="Massachusetts">Massachusetts</option>
+		<option value="Michigan">Michigan</option>
+		<option value="Minnesota">Minnesota</option>
+		<option value="Mississippi">Mississippi</option>
+		<option value="Missouri">Missouri</option>
+		<option value="Montana">Montana</option>
+		<option value="Nebraska">Nebraska</option>
+		<option value="Nevada">Nevada</option>
+		<option value="New Hampshire">New Hampshire</option>
+		<option value="New Jersey">New Jersey</option>
+		<option value="New Mexico">New Mexico</option>
+		<option value="New York">New York</option>
+		<option value="North Carolina">North Carolina</option>
+		<option value="North Dakota">North Dakota</option>
+		<option value="Ohio">Ohio</option>
+		<option value="Oklahoma">Oklahoma</option>
+		<option value="Oregon">Oregon</option>
+		<option value="Pennsylvania">Pennsylvania</option>
+		<option value="South Carolina">South Carolina</option>
+		<option value="South Dakota">South Dakota</option>
+		<option value="Tennessee">Tennessee</option>
+		<option value="Texas">Texas</option>
+		<option value="Utah">Utah</option>
+		<option value="Vermont">Vermont</option>
+		<option value="Virgin Islands">Virgin Islands</option>
+		<option value="Virginia">Virginia</option>
+		<option value="Washington">Washington</option>
+		<option value="West Virginia">West Virginia</option>
+		<option value="Wisconsin">Wisconsin</option>
+		<option value="Wyoming">Wyoming</option>
+		</select>
+		<input id ="b2"  type="button" class="button button5" onclick="enable()" style="float:right" value=" Srart Over ">
+	</div> 
+</div>
+
 <script>
+var sVal;
+function disable() {
+	  document.getElementById("selectbox1").disabled=true;
+}
+
+function enable() {
+	  //document.getElementById("selectbox1").disabled=false;
+window.location.replace("CFUS.html");
+	  
+}
+function NextPage() {
+	  //document.getElementById("selectbox1").disabled=false;
+	  	sVal = d3.select("#selectbox1").property('value');
+//		window.location.replace("CovidDeathActive.html?Province_State="+sVal);
+		window.location.replace("CFUS2.html?Province_State="+sVal);
+	  	 
+}
+
 //d3.select('svg').attr("fill", "pink");
 //d3.select('svg').style("background-color", 'black');
 //d3.select('svg').style("background-color", 'skyblue');
 
 async function init() {
+	sVal = d3.select("#selectbox1").property('value');
+	if (sVal=="none"){
+		 document.getElementById("b1").style.visibility = "hidden";
+		console.log("none");
+    }
+	else{	console.log("init(): "+sVal);
+	}
 	var margin = 50;
-	var height = 800;
+	var height = 600;
 	const data = await d3.csv('https://raw.githubusercontent.com/gorlesk/CFSUS/master/Covid19_Financial_Impact_US.csv');
-var width = 900;
+var width = 1000;
 var WIDTH = 900;
 var HEIGHT = 900;
 //var margin = 50;
 var margin = {top: 20, right: 20, bottom: 50, left: 70};
 var MARGIN = {top: 50, right: 50, bottom: 20, left: 50};
 
-d3.select("svg")
-.style("background-color", "black");
+
 
 const INNER_WIDTH  = WIDTH - MARGIN.left - MARGIN.right;
 const INNER_HEIGHT = HEIGHT - MARGIN.top - MARGIN.bottom;
@@ -55,12 +139,12 @@ const INNER_HEIGHT = HEIGHT - MARGIN.top - MARGIN.bottom;
 
 var xScale = d3.scaleLog()
       .domain([5,60000])
-      .range([0, 800])
+      .range([0, 600])
       .base(10);
 
 var yScale = d3.scaleLog()
        .domain([700000,400000000])
-       .range([800,0])
+       .range([600,0])
        .base(10);
 
 
@@ -78,44 +162,187 @@ var div = d3.select("body").append("div")
 var myFormat=d3.timeFormat("~s");
 var p = d3.precisionPrefix(1e5, 1.3e6);
 
-d3.select('svg').append("g")
-.attr("transform","translate(50,50)")
-.selectAll('circle').data(data)
-.enter().append('circle')
-.attr("cx", function(d) {return xScale(d.Deaths) ;})	
-.attr("cy", function(d) {return yScale(d.Debt) ;})
-.attr("r",function(d)    {return  rScale(d.Active);})
-.style("fill","skyblue")
-.style("stroke", "white")
-.style("stroke-width", 2)
-.on('click', function(d){console.log(d.Province_State);
-//CovidDeathActive.html d.Province_State
-window.location.replace("CovidDeathActive.html?Province_State="+d.Province_State);
+if (sVal=="none")
+{
+	//d3.select("svg")
+	//.style("background-color", "black");
+	const annotations = [
+		    {
+		      note: {
+//		        label: "Here is the annotation label",
+		        title: "Highly impacted states",
+		        align: "top",
+		        wrap: 250,
+		        padding: 10
+		      },
+		      connector: {
+		          end: "arrow",        // none, or arrow or dot
+		          type: "line",       // Line or curve
+		          points: 2,           // Number of break in the curve
+		          lineType : "horizontal"
+		        },
+		      type: d3.annotationCalloutCircle,
+		      subject: {
+		        radius: 75,         // circle radius
+		        radiusPadding: 20   // white space around circle befor connector
+		      },
+		      color: ["orange"],
+		      //color: ["red"],
+		      x: 558,
+		      y: 180,
+		      dy: 140,
+		      dx: 100
+		    }
+	    ]
 
-})
-.on("mouseover", function(d) {
-	   debt = myFormat(d.Debt);
-       div.transition()
-         .duration(50)
-         .style("opacity", .9);
-       div.html(
-         "<b>"+d.Province_State+ "</b>" + "<br/>" + "Debt: " + d3.formatPrefix("." + p, 1.3e6)(d.Debt) + " $" +"<br/>"+ "Deaths: " + d.Deaths)    
-         .style("left", (d3.event.pageX+10) + "px")             
-         .style("top", (d3.event.pageY - 15) + "px");
-       })
-.on('mouseout', () => {
-div
-.transition()
-.duration(50)
-.style('opacity', 1);
-});
+	// Add annotation to the chart
+	const makeAnnotations = d3.annotation()
+	  .annotations(annotations)
+	d3.select("svg")
+	  .append("g")
+	  .call(makeAnnotations);
 
+	
+	d3.select('svg').append("g")
+	.attr("transform","translate(50,50)")
+	.selectAll('circle').data(data)
+	.enter().append('circle')
+	.attr("cx", function(d) {return xScale(d.Deaths) ;})	
+	.attr("cy", function(d) {return yScale(d.Debt) ;})
+	.attr("r",function(d)    {return  rScale(d.Active);})
+	.style("fill","skyblue")
+	.style("stroke", "white")
+	.style("stroke-width", 2)
+	.on('click', function(d){console.log(d.Province_State);
+	//CovidDeathActive.html d.Province_State
+//	window.location.replace("CovidDeathActive.html?Province_State="+d.Province_State);
+	window.location.replace("CFUS2.html?Province_State="+d.Province_State);
+	
+	})
+	.on("mouseover", function(d) {
+		   debt = myFormat(d.Debt);
+	       div.transition()
+	         .duration(50)
+	         .style("opacity", .9);
+	       div.html(
+	         "<b>"+d.Province_State+ "</b>" + "<br/>" + "Debt: " + (d.Debt) + " $" +"<br/>"+ "Deaths: " + d.Deaths)    
+	         //"<b>"+d.Province_State+ "</b>" + "<br/>" + "Debt: " + d3.formatPrefix("." + p, 1.3e6)(d.Debt) + " $" +"<br/>"+ "Deaths: " + d.Deaths)            
+	         .style("left", (d3.event.pageX+10) + "px")             
+	         .style("top", (d3.event.pageY - 15) + "px");
+	       })
+	.on('mouseout', () => {
+	div
+	.transition()
+	.duration(50)
+	.style('opacity', 0);
+	});
+
+}
+else{
+disable();	
+var svgContainer = d3.select("svg").select("g").append("text");
+	
+var dt1,ac1,ra1;
+
+	
+	d3.select('svg').append("g")
+	.attr("transform","translate(50,50)")
+	.selectAll('circle').data(data)
+	.enter().append('circle')
+	.attr("cx", function(d) { return xScale(d.Deaths) ;})	
+	.attr("cy", function(d) { return yScale(d.Debt) ;})
+	.attr("r",function(d)    {return  rScale(d.Active);})
+	//.text(function(d) {if (d.Province_State==sVal) return d.Province_State;})
+	.text("text", function(d) { return sVal;})
+	.style("fill","black")
+	.style("stroke",function(d) {{return "white"};})
+	.style("stroke-width", 2)
+	.on('click', function(d){console.log(d.Province_State);
+	//CovidDeathActive.html d.Province_State
+	if (d.Province_State==sVal)
+	window.location.replace("CovidDeathActive.html?Province_State="+d.Province_State);
+	})
+	.on("mouseover", function(d) {
+		   debt = myFormat(d.Debt);
+	       div.transition()
+	         .duration(50)
+	         .style("opacity", .9);
+	       div.html(
+	         "<b>"+d.Province_State+ "</b>" + "<br/>" + "Debt: " + (d.Debt) + " $" +"<br/>"+ "Deaths: " + d.Deaths)    
+	         //"<b>"+d.Province_State+ "</b>" + "<br/>" + "Debt: " + d3.formatPrefix("." + p, 1.3e6)(d.Debt) + " $" +"<br/>"+ "Deaths: " + d.Deaths)            
+	         .style("left", (d3.event.pageX+10) + "px")             
+	         .style("top", (d3.event.pageY - 15) + "px");
+	       })
+	.on('mouseout', () => {
+	div
+	.transition()
+	.duration(50)
+	.style('opacity', 0);
+	});
+
+	d3.select('svg').append("g")
+	.attr("transform","translate(50,50)")
+	.selectAll('circle').data(data)
+	.enter().append('circle')
+	.attr("cx", function(d) {if(d.Province_State==sVal){dt1=xScale(d.Deaths)}; return xScale(d.Deaths) ;})	
+	.attr("cy", function(d) {if(d.Province_State==sVal){ac1=yScale(d.Debt)};return yScale(d.Debt) ;})
+	.attr("r",function(d)    {if(d.Province_State==sVal){ra1=rScale(d.Active)};return  rScale(d.Active);})
+	//.text(function(d) {if (d.Province_State==sVal) return d.Province_State;})
+	.text("text", function(d) {if(d.Province_State==sVal) return sVal;})
+	.style("fill",function(d) {if (d.Province_State==sVal) {return "skyblue"};})
+	.style("stroke",function(d) {if (d.Province_State==sVal){return "red"};})
+	.style("stroke-width", 2)
+	.on('click', function(d){console.log(d.Province_State);
+	//CovidDeathActive.html d.Province_State
+	if (d.Province_State==sVal)
+	//window.location.replace("CovidDeathActive.html?Province_State="+d.Province_State);
+	window.location.replace("CFUS2.html?Province_State="+sVal);
+	
+	})
+	.on("mouseover", function(d) {
+		   debt = myFormat(d.Debt);
+	       div.transition()
+	         .duration(50)
+	         .style("opacity", .9);
+	       div.html(
+	         "<b>"+d.Province_State+ "</b>" + "<br/>" + "Debt: " + (d.Debt) + " $" +"<br/>"+ "Deaths: " + d.Deaths)    
+	         //"<b>"+d.Province_State+ "</b>" + "<br/>" + "Debt: " + d3.formatPrefix("." + p, 1.3e6)(d.Debt) + " $" +"<br/>"+ "Deaths: " + d.Deaths)            
+	         .style("left", (d3.event.pageX+10) + "px")             
+	         .style("top", (d3.event.pageY - 15) + "px");
+	       })
+	.on('mouseout', () => {
+	div
+	.transition()
+	.duration(50)
+	.style('opacity', 1);
+	});
+
+	
+console.log("d "+dt1);
+console.log("a "+ac1);
+console.log("r "+ra1);
+d3.select('svg').select("text").remove;
+d3.select('svg')
+.selectAll('text')
+.exit()
+.remove();
+d3.select('svg').append("text")             
+.attr("transform",
+      "translate(" + dt1 + " ," + 
+                     ac1 + ")")
+.text(sVal)
+.style('font-size', '17px')
+.style('font-family', '"Open Sans", sans-serif')
+.style('font-weight', 'bold').style("fill","red");
+
+	   	
+}
 
 
 // text label for the x axis
-d3.select('svg').append("text")             
+d3.select('svg').append("text").attr("class","x-axis")             
     .attr("transform",
-          "translate(" + (width/2) + " ," + 
+          "translate(" + (300) + " ," + 
                          (height + 90) + ")")
 .text("Covid Deaths")
 .style('font-size', '17px')
@@ -124,7 +351,7 @@ d3.select('svg').append("text")
     
 
 //text label for the y axis
-d3.select('svg').append("text")
+d3.select('svg').append("text").attr("class","y-axis")
     .attr("transform", "rotate(-90)")
     .attr("y", 0)
     .attr("x",0 - (height / 2) - 50)
@@ -144,34 +371,37 @@ d3.select('svg').append("text")
 var xTickValues = [10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000]
 var yTickValues = [1000000, 2000000, 5000000, 10000000, 20000000, 50000000, 100000000, 200000000]
 
-const xAxisGrid = d3.axisBottom(xScale).tickSize(-1000).tickFormat('').ticks(4);
-const yAxisGrid = d3.axisLeft(yScale).tickSize(-1000).tickFormat('').ticks(2);
-
-
-//Create grids.
-//d3.select('svg').append('g')
-//  .attr("transform","translate("+margin.bottom+","+margin.bottom+")")
-//  .call(yAxisGrid);
-
-//d3.select('svg').append('g').attr("transform","translate("+margin.bottom+","+(height+margin.bottom)+")")
-//  .call(xAxisGrid);
-
-
-
 var y_axis = d3.axisLeft().scale(yScale).tickValues(yTickValues).tickFormat(d3.format("~s"));
 
 d3.select("svg")
    .append("g")
-   .attr("transform","translate("+margin.bottom+","+margin.bottom+")")
-   .call(y_axis).attr("class", "axisBlue");
-     
+   .attr("transform","translate("+margin.bottom+","+margin.bottom+")").style("line", "red")
+   .call(y_axis).style("stroke", "skyblue").attr("class", "axisBlue");
+
+
 var x_axis = d3.axisBottom().scale(xScale).tickValues(xTickValues).tickFormat(d3.format("~s"));
 d3.select("svg")
    .append("g")
    .attr("transform","translate("+margin.bottom+","+(height+margin.bottom)+")")
-   .call(x_axis).attr("class", "axisBlue");
+   .call(x_axis).style("stroke", "skyblue").attr("class", "axisBlue");
 
+
+d3.select("#selectbox1")
+.on("change", function() {
+	  document.getElementById("b1").style.visibility = "visible";
+		
+	init(this.value, 750);
+});
 }
+
+/*svgElement = document.getElementsByTagName("svg")[0];
+
+svgElement.style.position = "relative";
+svgElement.style.top = "50%";
+svgElement.style.left = "50%";
+svgElement.style.transform = "translate(-50%, -50%)";*/
 </script>
+
+
 </body>
 </html>
