@@ -105,7 +105,7 @@ function NextPage() {
 	  //document.getElementById("selectbox1").disabled=false;
 	  	sVal = d3.select("#selectbox1").property('value');
 //		window.location.replace("CovidDeathActive.html?Province_State="+sVal);
-		window.location.replace("CFUS2.html?Province_State="+sVal);
+		window.location.replace("CovidOnly.html?Province_State="+sVal);
 	  	 
 }
 
@@ -216,7 +216,7 @@ if (sVal=="none")
 	.on('click', function(d){console.log(d.Province_State);
 	//CovidDeathActive.html d.Province_State
 //	window.location.replace("CovidDeathActive.html?Province_State="+d.Province_State);
-	window.location.replace("CFUS2.html?Province_State="+d.Province_State);
+	window.location.replace("CovidOnly.html?Province_State="+d.Province_State);
 	
 	})
 	.on("mouseover", function(d) {
@@ -296,7 +296,7 @@ var dt1,ac1,ra1;
 	//CovidDeathActive.html d.Province_State
 	if (d.Province_State==sVal)
 	//window.location.replace("CovidDeathActive.html?Province_State="+d.Province_State);
-	window.location.replace("CFUS2.html?Province_State="+sVal);
+	window.location.replace("CovidOnly.html?Province_State="+sVal);
 	
 	})
 	.on("mouseover", function(d) {
