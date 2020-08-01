@@ -118,7 +118,7 @@ d3.select('svg').append("g")
       if (d.Province_State == state) {console.log("red"+state); return "red"}
       ;})
 .style("stroke-width", 2)
-.on('click',function(d)  {
+/*.on('click',function(d)  {
     if(d.Province_State == state)
     {   console.log("nextPage"+state);
         var my_url="CovidPerDayDeaths.html?Province_State="+d.Province_State;
@@ -127,7 +127,7 @@ d3.select('svg').append("g")
         window.top.location.href=my_url;
         //window.parent.location.href=my_url;
     }
-})
+})*/
 .on("mouseover", function(d) {
 	   debt = myFormat(d.Debt);
        div.transition()
