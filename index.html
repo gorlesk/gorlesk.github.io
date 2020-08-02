@@ -1,7 +1,7 @@
 <html>
 <head>
  <meta charset = "UTF-8">
- <title>externalStyle.html</title>
+ <title>19 over 50</title>
  <link rel = "stylesheet"
    type = "text/css"
    href = "index.css" />
@@ -34,7 +34,7 @@
 		<input id ="b1" type="button" onclick="NextPage()" style="float:right" class="button" value=" Next ">
 		<select id="selectbox1" class="button button5" style="float:right">
 		<option  value="none" selected disabled hidden > 
-		    Select State 
+		    USA 
 		</option>
 		<option value="Alaska">Alaska</option>
 		<option value="Arizona">Arizona</option>
@@ -88,6 +88,24 @@
 		</select>
 		<input id ="b2"  type="button" class="button button5" onclick="enable()" style="float:right" value=" Srart Over ">
 	</div> 
+	<div >
+		<p class="content">
+		Whole layout described with a  Scatter plot to have gist of Covid financial impact in USA and two Bar 
+		charts to dig into the details by Covid-19 cases and financial details respectively.
+	
+	First, Scatter plot chart on the left, gives overview of all states representing Covid deaths occurred 
+	against debt of a state. Position on a circle indicates how the state is effected by Covid deaths against 
+	debt of a state. Which implies that one on the top right extreme has impacted by Covid badly.In addition, 
+	the size of the circle resembles active Covid cases of given state. Which means, the larger the size represent 
+	more number of active cases and smaller the circle size indicates lesser no of active cases in a state.
+	Secondly, The Bar chart on the top right provides specific information about a state Covid cases information 
+	with "Deaths", "Confirmed" and "Active" numbers and can be easily compared with other states. 
+	The right bottom Bar chart shows state specific details about economical position a state with "State and Local Debt%", 
+	"Real State Growth %"  and "Gross State Product". Bar chats with size, unique color per category with values
+	 helps to compare each state with others
+		
+		</p>
+	</div>
 </div>
 
 <script>
@@ -97,10 +115,9 @@ function disable() {
 }
 
 function enable() {
-	  //document.getElementById("selectbox1").disabled=false;
-window.location.replace("CFUS.html");
-	  
+	window.location.replace("index.html");	  
 }
+
 function NextPage() {
 	  //document.getElementById("selectbox1").disabled=false;
 	  	sVal = d3.select("#selectbox1").property('value');
