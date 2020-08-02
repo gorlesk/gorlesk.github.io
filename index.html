@@ -1,7 +1,7 @@
 <html>
 <head>
  <meta charset = "UTF-8">
- <title>19 over 50</title>
+ <title>19 & 50 - Covid 19 on 50 States</title>
  <link rel = "stylesheet"
    type = "text/css"
    href = "index.css" />
@@ -19,22 +19,19 @@
 </div>
 
 <div class="text1">
-  <h3>Overview of Covid deaths vs Debt in USA</h3>
+  <h3>Covid Deaths vs Debt in USA</h3>
 </div> 
 <div class="row">
 	<div class="leftcolumn">
 		<div class="card" style="text-align:center" >       	    
 			<svg width=900 height=750>
-			<text style="font-size:16px;" class="specialColor" fill="skyblue" class="title" x=70 y=50>Hover over the circles to see more information</text>
-			<text style="font-size:16px;" class="specialColor" fill="skyblue" x=70 y=80>Select a state to start navigation. </text>
 			</svg> 
 		</div>     
 	</div>
 	<div class="rightcolumn">
-		<input id ="b1" type="button" onclick="NextPage()" style="float:right" class="button" value=" Next ">
 		<select id="selectbox1" class="button button5" style="float:right">
 		<option  value="none" selected disabled hidden > 
-		    USA 
+		    Which State? 
 		</option>
 		<option value="Alaska">Alaska</option>
 		<option value="Arizona">Arizona</option>
@@ -90,6 +87,9 @@
 	</div> 
 	<div >
 		<p class="content">
+		To start navigation, select 'Which State?' and click highlighted circle. <br>  
+		Hover over the circles to see more information.<br>
+		<br>
 		Whole layout described with a  Scatter plot to have gist of Covid financial impact in USA and two Bar 
 		charts to dig into the details by Covid-19 cases and financial details respectively.
 	
@@ -133,7 +133,7 @@ function NextPage() {
 async function init() {
 	sVal = d3.select("#selectbox1").property('value');
 	if (sVal=="none"){
-		 document.getElementById("b1").style.visibility = "hidden";
+		 document.getElementById("b2").style.visibility = "hidden";
 		console.log("none");
     }
 	else{	console.log("init(): "+sVal);
@@ -181,45 +181,110 @@ var p = d3.precisionPrefix(1e5, 1.3e6);
 
 if (sVal=="none")
 {
-	//d3.select("svg")
-	//.style("background-color", "black");
+	// create annotation 
 	const annotations = [
-		    {
-		      note: {
-//		        label: "Here is the annotation label",
-		        title: "Highly impacted states",
-		        align: "top",
-		        wrap: 250,
-		        padding: 10
-		      },
-		      connector: {
-		          end: "arrow",        // none, or arrow or dot
-		          type: "line",       // Line or curve
-		          points: 2,           // Number of break in the curve
-		          lineType : "horizontal"
-		        },
-		      type: d3.annotationCalloutCircle,
-		      subject: {
-		        radius: 75,         // circle radius
-		        radiusPadding: 20   // white space around circle befor connector
-		      },
-		      color: ["orange"],
-		      //color: ["red"],
-		      x: 558,
-		      y: 180,
-		      dy: 140,
-		      dx: 100
-		    }
-	    ]
+    {
+      note: {
+        title: "Highly impacted states",
+        align: "top",
+        wrap: 250,
+        padding: 10
+      },
+      connector: {
+          end: "arrow",        
+          type: "line",       
+          points: 2,           
+          lineType : "horizontal"
+        },
+
+       type: d3.annotationCalloutRect,
+       subject: {
+         width: 140,
+         height: 50
+       },
+    color: ["orange"],
+       x: 490,
+       y: 120,
+       dy: 10,
+       dx: 160    
+    }
+   ]
 
 	// Add annotation to the chart
 	const makeAnnotations = d3.annotation()
-	  .annotations(annotations)
+	  .annotations(annotations);
 	d3.select("svg")
 	  .append("g")
 	  .call(makeAnnotations);
+	  
+	const arrow1 = [
+    {
+  	    note: {
+  	      title: "State with higher active cases",
+  	      wrap: 250
+  	    },
+  	    connector: {
+  	      end: "arrow",        // Can be none, or arrow or dot
+  	      type: "line",      // ?? don't know what it does
+  	      lineType : "vertical",    // ?? don't know what it does
+  	      endScale: 1     // dot size
+  	    },
+       subject: {
+	          width: 100,
+	          height: 20
+	        },
+  	    color: ["orange"],
+  	    x: 500,
+  	    y: 305,
+  	    dy: 20,
+  	    dx: 15
+  	  }
+     ]
 
-	
+   	// Add annotation to the chart
+   	const makeArrow1 = d3.annotation()
+   	  .annotations(arrow1);
+   	d3.select("svg")
+   	  .append("g")
+   	  .call(makeArrow1);
+
+	const ant_low = [
+    {
+      note: {
+        title: "States with lesser deaths and debt",
+        align: "center",
+        wrap: 250,
+        padding: 5
+      },
+      connector: {
+    	  align: "center",
+          end: "arrow",        
+          type: "line",       
+          points: 2,           
+          lineType : "horizontal"
+        },
+
+       type: d3.annotationCalloutRect,
+       subject: {
+         width: 130,
+         height: 155
+       },
+    color: ["orange"],
+       x: 55,
+       y: 490,
+       dy: 100,
+       dx: 150    
+    }
+   ]
+
+   	// Add annotation to the chart
+   	const makeLowerAnnotations = d3.annotation()
+   	  .annotations(ant_low);
+ 	  
+   	d3.select("svg")
+   	  .append("g")
+   	  .call(makeLowerAnnotations);
+	         	  
 	d3.select('svg').append("g")
 	.attr("transform","translate(50,50)")
 	.selectAll('circle').data(data)
@@ -230,11 +295,10 @@ if (sVal=="none")
 	.style("fill","skyblue")
 	.style("stroke", "white")
 	.style("stroke-width", 2)
-	.on('click', function(d){console.log(d.Province_State);
+	.on("click", function(d){console.log(d.Province_State);
 	//CovidDeathActive.html d.Province_State
 //	window.location.replace("CovidDeathActive.html?Province_State="+d.Province_State);
 	window.location.replace("CovidOnly.html?Province_State="+d.Province_State);
-	
 	})
 	.on("mouseover", function(d) {
 		   debt = myFormat(d.Debt);
@@ -254,14 +318,13 @@ if (sVal=="none")
 	.style('opacity', 0);
 	});
 
+	
 }
 else{
-disable();	
-var svgContainer = d3.select("svg").select("g").append("text");
-	
-var dt1,ac1,ra1;
+	disable();	
+	var svgContainer = d3.select("svg").select("g").append("text");
+	var dt1,ac1,ra1;
 
-	
 	d3.select('svg').append("g")
 	.attr("transform","translate(50,50)")
 	.selectAll('circle').data(data)
@@ -303,7 +366,7 @@ var dt1,ac1,ra1;
 	.enter().append('circle')
 	.attr("cx", function(d) {if(d.Province_State==sVal){dt1=xScale(d.Deaths)}; return xScale(d.Deaths) ;})	
 	.attr("cy", function(d) {if(d.Province_State==sVal){ac1=yScale(d.Debt)};return yScale(d.Debt) ;})
-	.attr("r",function(d)    {if(d.Province_State==sVal){ra1=rScale(d.Active)};return  rScale(d.Active);})
+	.attr("r",function(d)    {if(d.Province_State==sVal){ra1=rScale(d.Active)}; return  rScale(d.Active);})
 	//.text(function(d) {if (d.Province_State==sVal) return d.Province_State;})
 	.text("text", function(d) {if(d.Province_State==sVal) return sVal;})
 	.style("fill",function(d) {if (d.Province_State==sVal) {return "skyblue"};})
@@ -335,23 +398,24 @@ var dt1,ac1,ra1;
 	});
 
 	
-console.log("d "+dt1);
-console.log("a "+ac1);
-console.log("r "+ra1);
-d3.select('svg').select("text").remove;
-d3.select('svg')
-.selectAll('text')
-.exit()
-.remove();
-d3.select('svg').append("text")             
-.attr("transform",
-      "translate(" + dt1 + " ," + 
-                     ac1 + ")")
-.text(sVal)
-.style('font-size', '17px')
-.style('font-family', '"Open Sans", sans-serif')
-.style('font-weight', 'bold').style("fill","red");
-
+	console.log("d "+dt1);
+	console.log("a "+ac1);
+	console.log("r "+ra1);
+	d3.select('svg').select("text").remove;
+	d3.select('svg')
+	.selectAll('text')
+	.exit()
+	.remove();
+	d3.select('svg').append("text")             
+	.attr("transform",
+	      "translate(" + dt1 + " ," + 
+	                     (ac1+80) + ")")
+	.text(sVal)
+	.style('font-size', '20px')
+	.style('font-family', '"Open Sans", sans-serif')
+	.style('font-weight', 'bold').style("fill","red");
+	
+		
 	   	
 }
 
@@ -399,16 +463,20 @@ d3.select("svg")
 var x_axis = d3.axisBottom().scale(xScale).tickValues(xTickValues).tickFormat(d3.format("~s"));
 d3.select("svg")
    .append("g")
-   .attr("transform","translate("+margin.bottom+","+(height+margin.bottom)+")")
+   .attr("transform","translate("+margin.bottom+","+(height+margin.bottom)+")")  
    .call(x_axis).style("stroke", "skyblue").attr("class", "axisBlue");
 
 
 d3.select("#selectbox1")
 .on("change", function() {
-	  document.getElementById("b1").style.visibility = "visible";
+	  document.getElementById("b2").style.visibility = "visible";
 		
 	init(this.value, 750);
 });
+
+
+
+
 }
 
 /*svgElement = document.getElementsByTagName("svg")[0];

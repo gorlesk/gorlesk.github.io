@@ -29,6 +29,17 @@ div.tooltip {
   border: 0px;
   border-radius: 8px;
 }
+div.tooltip1 {
+  position: absolute;
+  text-align: center;
+  width: 130px;
+  height: 75px;
+  padding: 2px;
+  font: 14px sans-serif;
+  background: skyblue;
+  border: 0px;
+  border-radius: 8px;
+}
 
 .specialColor { 
     /* Whatever color  you want */
