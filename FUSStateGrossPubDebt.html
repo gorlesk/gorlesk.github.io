@@ -118,12 +118,43 @@ function chartDeath(data) {
 	.attr("transform", "translate(0," + (height - margin.bottom) + ")")
 	//.attr("transform", "translate(0," + 370 + ")")
 	.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%Y"))).attr("class", "axisBlue");
-	
+
+	/* Name the x axis */
+	d3.select('svg').append("text")             
+	    .attr("transform",
+	          "translate(" + (240) + " ," + 
+	                         (340) + ")")
+	.text("Economic Year")
+	.style('font-size', '17px')
+	.style('font-family', '"Open Sans", sans-serif')
+	.style('font-weight', 'bold').style("fill","skyblue");
+
+	/* Name time series */
+	d3.select('svg').append("text")             
+	    .attr("transform",
+	          "translate(" + (120) + " ," + 
+	                         (15) + ")")
+	.text(state+" Gross Public Debt Time Series")
+	.style('font-size', '20px')
+	.style('font-family', '"Open Sans", sans-serif')
+	.style('font-weight', 'bold').style("fill","skyblue");
+		
 	svg.append("g")
 	.attr("class", "y-axis")
 	.attr("transform", "translate(" + margin.left + ",0)");
 	//    .attr("transform", "translate(" + 35 + ",0)");
-	
+
+		/*Name the y axis*/
+	d3.select('svg').append("text")
+	    .attr("transform", "rotate(-90)")
+	    .attr("y", -5)
+	    .attr("x",0 - (300))
+	    .attr("dy", "1em")
+	.text("Gross Public Debt $ billion nominal")     
+	.style('font-size', '17px')
+	.style('font-family', '"Open Sans", sans-serif')
+	.style('font-weight', 'bold').style("fill","skyblue");
+		
 	var focus = svg.append("g")
 	.attr("class", "focus")
 	.style("display", "none").style("fill","skyblue");
@@ -144,7 +175,7 @@ function chartDeath(data) {
 	.attr("class", "overlay")
 	.attr("x", 35)
 	.attr("width", 600)
-	.attr("height", 250)
+	.attr("height", 310)
 	
 	update1(state, 0);
 	    var confirmedCases;
@@ -248,7 +279,7 @@ function chartDeath(data) {
 			focus.selectAll(".lineHoverText")
 			.attr("transform",
 			"translate(" + (x(d.Date)) + "," + 385 / 2.5 + ")").style("fill","skyblue")
-			.text(e => e + " GDP during " + myDate(d.Date) + " : " +(d[e])+".");
+			.text(e => e + " GPD during " + myDate(d.Date) + " : " +(d[e])+".");
 			
 			x(d.Date) > (width - width / 4)
 			? focus.selectAll("text.lineHoverText")

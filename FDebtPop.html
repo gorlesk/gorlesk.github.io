@@ -11,15 +11,35 @@
 <style>
 
 </style>
+<script>
+const queryString1 = window.location.search;
+console.log(queryString1);
+
+const urlParams1 = new URLSearchParams(queryString1);
+console.log(urlParams1);
+
+var state1 = urlParams1.get('Province_State')
+console.log("script"+state1);
+</script>
  </head>
  
 <body onload='init()'>
 
-<div class="text1">
-  <h3>Overview of US State Debt and Population</h3>
-</div> 
+<div id="wrapper" class="text1">
+   <script>
+    // Storing state for heading
+    var codeBlock = '<div class="text1">' +
+                        '<h3>' + state1 + ' State Debt & Population</h3>' +
+                    '</div>';
+    
+    // Inserting the code block to wrapper element
+    document.getElementById("wrapper").innerHTML = codeBlock
+    </script>   
+  
+</div>
+
 <div class="rightnext">
-		<input id ="b1" type="button" onclick="homePage();" style="float:right" class="button" value=" Start Over ">
+		<input id ="b1" type="button" onclick="homePage();" style="float:right" class="button" value=" Complete ">
 		 <br> <br> <br> <br>
 		<p class="text1">
 		Whole layout described with a  Scatter plot to have gist of Covid financial impact in USA and two Bar 
@@ -90,6 +110,79 @@ var yScale = d3.scaleLog()
 var rScale= d3.scaleSqrt();
 rScale.domain([104,338961]).range([1, 20]);
 
+//create annotation 
+const annotations = [
+{
+  note: {
+    title: "States with more Debt",
+    align: "top",
+    wrap: 250,
+    padding: 10
+  },
+  connector: {
+      end: "arrow",        
+      type: "line",       
+      points: 2,           
+      lineType : "horizontal"
+    },
+
+   type: d3.annotationCalloutRect,
+   subject: {
+     width: 160,
+     height: 70
+   },
+color: ["orange"],
+   x: 670,
+   y: 20,
+   dy: 2,
+   dx: -30    
+}
+]
+
+// Add annotation to the chart
+const makeAnnotations = d3.annotation()
+  .annotations(annotations);
+d3.select("svg")
+  .append("g")
+  .call(makeAnnotations);
+
+const ant_low = [
+    {
+      note: {
+        title: "States with less popopulation and Debt",
+        align: "left",
+        wrap: 180,
+        padding: 5
+      },
+      connector: {
+    	  align: "left",
+          end: "arrow",        
+          type: "line",       
+          points: 2,           
+          lineType : "horizontal"
+        },
+
+       type: d3.annotationCalloutRect,
+       subject: {
+         width: 260,
+         height: 130
+       },
+    color: ["orange"],
+       x: 53,
+       y: 168,
+       dy: -40,
+       dx: 150    
+    }
+   ]
+
+// Add annotation to the chart
+const makeLowerAnnotations = d3.annotation()
+  .annotations(ant_low);
+  
+d3.select("svg")
+  .append("g")
+  .call(makeLowerAnnotations);
+
 var div = d3.select("body").append("div")
 .attr("class", "tooltip")
 .style("opacity", 0);
@@ -147,15 +240,16 @@ div
 .style('opacity', 1);
 }); 
 
+var y1,x1,r1;
 
 d3.select('svg').append("g")
 .attr("transform","translate(50,50)").attr("background-color", 'black')
 .selectAll('circle').data(data)
 .enter().append('circle')
 .attr("cy", function(d) { 
-    if (d.Province_State == state) {return yScale(d.Debt)};})
-.attr("cx", function(d) {    if (d.Province_State == state) {return xScale(d.Pop)};})
-.attr("r",function(d)    {if (d.Province_State == state) return  rScale(d['State and Local Debt']);})
+    if (d.Province_State == state) {y1 = yScale(d.Debt);return yScale(d.Debt)};})
+.attr("cx", function(d) {    if (d.Province_State == state) {x1=xScale(d.Pop); return xScale(d.Pop)};})
+.attr("r",function(d)    {if (d.Province_State == state) {return  rScale(d['State and Local Debt'])};})
 //.style("fill","skyblue")
 .style("fill", function(d) {
       if (d.Province_State == state) {return "skyblue"}
@@ -165,12 +259,12 @@ d3.select('svg').append("g")
       if (d.Province_State == state) {return "red"}
       ;})
 .style("stroke-width", 2)
-.on('click',function(d)  {
+/*.on('click',function(d)  {
     if(d.Province_State == state)
     {   
         window.location.replace("CovidPerDayDeaths.html?Province_State="+d.Province_State);
     }
-})
+})*/
 .on("mouseover", function(d) {
 	   debt = myFormat(d.Debt);
        div.transition()
@@ -189,6 +283,19 @@ div
 .style('opacity', 1);
 })
 ;
+
+/*State annotation*/
+d3.select('svg').append("text")             
+.attr("transform",
+      "translate(" + (x1+10) + " ," + 
+                     (y1+70) + ")")
+.text(state)
+.style('font-size', '20px')
+.style('font-family', '"Open Sans", sans-serif')
+.style('font-weight', 'bold').style("fill","red");
+
+
+
 // text label for the x axis
 d3.select('svg').append("text")             
     .attr("transform",

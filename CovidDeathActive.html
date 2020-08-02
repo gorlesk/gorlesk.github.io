@@ -9,20 +9,36 @@
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 <script>
+const queryString1 = window.location.search;
+console.log(queryString1);
 
+const urlParams1 = new URLSearchParams(queryString1);
+console.log(urlParams1);
+
+var state1 = urlParams1.get('Province_State')
+console.log("script"+state1);
 </script>
  </head>
  
 <body onload='init()'>
 
-<div class="text1">
-  <h3>Overview of Covid deaths vs Debt in USA</h3>
+<div id="wrapper" class="text1">
+   <script>
+    // Storing state for heading
+    var codeBlock = '<div class="text1">' +
+                        '<h3>' + state1 + ' Covid Cases & Deaths</h3>' +
+                    '</div>';
+    
+    // Inserting the code block to wrapper element
+    document.getElementById("wrapper").innerHTML = codeBlock
+    </script>   
+  
 </div>
 
 <div class="rightnext">
 		<input id ="b1" type="button" onclick="NextPage();" style="float:right" class="button" value=" Continue ">
-		<div class="content">
-		<p class="text1">
+		<div >
+		<p class="content">
 		Whole layout described with a  Scatter plot to have gist of Covid financial impact in USA and two Bar 
 		charts to dig into the details by Covid-19 cases and financial details respectively.
 	
@@ -32,10 +48,7 @@
 	the size of the circle resembles active Covid cases of given state. Which means, the larger the size represent 
 	more number of active cases and smaller the circle size indicates lesser no of active cases in a state.
 	Secondly, The Bar chart on the top right provides specific information about a state Covid cases information 
-	with "Deaths", "Confirmed" and "Active" numbers and can be easily compared with other states. 
-	The right bottom Bar chart shows state specific details about economical position a state with "State and Local Debt%", 
-	"Real State Growth %"  and "Gross State Product". Bar chats with size, unique color per category with values
-	 helps to compare each state with others
+	with "Deaths", "Confirmed" and "Active" numbers and can be easily compared.
 		
 		</p>
 		</div>
@@ -96,8 +109,81 @@ var yScale = d3.scaleLog()
 var rScale= d3.scaleSqrt();
 rScale.domain([104,338961]).range([1, 20]);
 
+//create annotation 
+const annotations = [
+{
+  note: {
+    title: "States with more cases and deaths",
+    align: "top",
+    wrap: 250,
+    padding: 10
+  },
+  connector: {
+      end: "arrow",        
+      type: "line",       
+      points: 2,           
+      lineType : "horizontal"
+    },
+
+   type: d3.annotationCalloutRect,
+   subject: {
+     width: 80,
+     height: 110
+   },
+color: ["orange"],
+   x: 790,
+   y: 20,
+   dy: 2,
+   dx: -30    
+}
+]
+
+// Add annotation to the chart
+const makeAnnotations = d3.annotation()
+  .annotations(annotations);
+d3.select("svg")
+  .append("g")
+  .call(makeAnnotations);
+
+const ant_low = [
+    {
+      note: {
+        title: "Less positives and fatality States",
+        align: "center",
+        wrap: 250,
+        padding: 5
+      },
+      connector: {
+    	  align: "left",
+          end: "arrow",        
+          type: "line",       
+          points: 2,           
+          lineType : "horizontal"
+        },
+
+       type: d3.annotationCalloutRect,
+       subject: {
+         width: 250,
+         height: 100
+       },
+    color: ["orange"],
+       x: 53,
+       y: 197,
+       dy: -50,
+       dx: 150    
+    }
+   ]
+
+   	// Add annotation to the chart
+   	const makeLowerAnnotations = d3.annotation()
+   	  .annotations(ant_low);
+	  
+	d3.select("svg")
+ 	  .append("g")
+ 	  .call(makeLowerAnnotations);
+	  
 var div = d3.select("body").append("div")
-.attr("class", "tooltip")
+.attr("class", "tooltip1")
 .style("opacity", 0);
 
 var myFormat=d3.timeFormat("~s");
@@ -107,6 +193,8 @@ var p = d3.precisionPrefix(1e3, 1.3e4);
 var canvas = d3.select('svg').append("g")
 .attr("transform","translate(50,50)")
 .attr("background-color", 'black');
+
+
 
 canvas.selectAll('circle').data(data)
 .enter().append('circle').attr("cy", function(d) {return yScale(d.Deaths) ;})
@@ -133,15 +221,16 @@ div
 });
 
 console.log("94"+state);
+var y1,x1,r1;
 
 d3.select('svg').append("g")
 .attr("transform","translate(50,50)").attr("background-color", 'black')
 .selectAll('circle').data(data)
 .enter().append('circle')
 .attr("cy", function(d) { 
-    if (d.Province_State == state) {return yScale(d.Deaths)};})
-.attr("cx", function(d) {    if (d.Province_State == state) {return xScale(d.Confirmed)};})
-.attr("r",function(d)    {if (d.Province_State == state) return  rScale(d.Active);})
+    if (d.Province_State == state) {y1=yScale(d.Deaths); return yScale(d.Deaths)};})
+.attr("cx", function(d) {    if (d.Province_State == state) {x1=xScale(d.Confirmed); return xScale(d.Confirmed)};})
+.attr("r",function(d)    {if (d.Province_State == state) {r1=rScale(d.Active); return  rScale(d.Active)};})
 //.style("fill","skyblue")
 .style("fill", function(d) {
       if (d.Province_State == state) {return "skyblue"}
@@ -179,19 +268,29 @@ div
 .style('opacity', 1);
 })
 ; 
+/*State annotation*/
+d3.select('svg').append("text")             
+.attr("transform",
+      "translate(" + x1 + " ," + 
+                     (y1+80) + ")")
+.text(state)
+.style('font-size', '20px')
+.style('font-family', '"Open Sans", sans-serif')
+.style('font-weight', 'bold').style("fill","red");
 
-// text label for the x axis
+	
+/* Name the x axis */
 d3.select('svg').append("text")             
     .attr("transform",
           "translate(" + (width/2) + " ," + 
-                         (320) + ")")
+                         (325) + ")")
 .text("Covid Confirmed")
 .style('font-size', '17px')
 .style('font-family', '"Open Sans", sans-serif')
 .style('font-weight', 'bold').style("fill","skyblue");
     
 
-//text label for the y axis
+/*Name the y axis*/
 d3.select('svg').append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", 0)

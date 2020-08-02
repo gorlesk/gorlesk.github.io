@@ -116,11 +116,42 @@ function chartDeath(data) {
 	.attr("transform", "translate(0," + (height - margin.bottom) + ")")
 	//.attr("transform", "translate(0," + 370 + ")")
 	.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b"))).attr("class", "axisBlue");
+
+	/* Name the x axis */
+	d3.select('svg').append("text")             
+	    .attr("transform",
+	          "translate(" + (320) + " ," + 
+	                         (340) + ")")
+	.text("Month")
+	.style('font-size', '17px')
+	.style('font-family', '"Open Sans", sans-serif')
+	.style('font-weight', 'bold').style("fill","skyblue");
+
+	/* Name time series */
+	d3.select('svg').append("text")             
+	    .attr("transform",
+	          "translate(" + (220) + " ," + 
+	                         (15) + ")")
+	.text(state+" Fatality Time Series")
+	.style('font-size', '20px')
+	.style('font-family', '"Open Sans", sans-serif')
+	.style('font-weight', 'bold').style("fill","skyblue");
 	
 	svg.append("g")
 	.attr("class", "y-axis")
 	.attr("transform", "translate(" + margin.left + ",0)");
 	//    .attr("transform", "translate(" + 35 + ",0)");
+	
+		/*Name the y axis*/
+	d3.select('svg').append("text")
+	    .attr("transform", "rotate(-90)")
+	    .attr("y", -5)
+	    .attr("x",0 - (180))
+	    .attr("dy", "1em")
+	.text("Deaths")     
+	.style('font-size', '17px')
+	.style('font-family', '"Open Sans", sans-serif')
+	.style('font-weight', 'bold').style("fill","skyblue");
 	
 	var focus = svg.append("g")
 	.attr("class", "focus")
@@ -142,7 +173,7 @@ function chartDeath(data) {
 	.attr("class", "overlay")
 	.attr("x", 35)
 	.attr("width", 800)
-	.attr("height", 250)
+	.attr("height", 310)
 	
 	update1(state, 0);
 	    var confirmedCases;
