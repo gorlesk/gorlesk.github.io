@@ -34,7 +34,7 @@ console.log(state);
 	
 	<div style="background-color: black;" height="50%">
 	    <div width="50%">
-		<iframe id="if2" frameborder="0" height="45%" width="50%" scrolling="no"> </iframe>
+		<iframe id="if2" frameborder="0" height="45%" width="50%" style="float: left;" scrolling="no"> </iframe>
 		</div>
 
 	    <div width="50%">
@@ -50,10 +50,10 @@ function nextSceneURL(){
 	console.log("1"+url1);
 	document.getElementById("if1").setAttribute("src", url1);
 
-	var url2= "CovidPerDayDeaths.html?Province_State="+state;
+	var url2= "FUSStateGDP.html?Province_State="+state;
 	document.getElementById("if2").setAttribute("src", url2);
 
-	var url3= "CovidPerDayDeaths.html?Province_State="+state;
+	var url3= "FUSStateGrossPubDebt.html?Province_State="+state;
 	document.getElementById("if3").setAttribute("src", url3);
 }
 nextSceneURL();

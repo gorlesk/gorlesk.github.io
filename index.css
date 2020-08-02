@@ -165,7 +165,7 @@ p {
 .leftcolumn {
   display: table-cell;
   float: left;
-  width: 70%;
+  width: 60%;
 /*   width: 75%; */
 }
 
@@ -173,6 +173,16 @@ p {
   text-align: center;
   margin-top: 40px;
 }  
+ 
+ /* Rightmost next column */
+.rightnext {
+  display: table-cell;
+  float: right;
+  width: 40%;
+   padding:10px;
+   
+/*   padding-left: 20px; */
+} 
   
 /* Right column */
 .rightcolumn {
@@ -215,7 +225,20 @@ p {
 	width: 100%;
 }
   
- 
+ /* Para Content */
+.content {
+  padding: 2px;
+  background: black;
+  color: skyblue;
+  margin: 0px;
+	margin-top: 100px;
+	margin-right: 100px;
+	font-size:18px;
+	font-weight:bold;
+	text-align: left;
+/*	text-align-last: center;
+*/}
+  
 
 /* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 1000px) {
