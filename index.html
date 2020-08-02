@@ -214,7 +214,7 @@ if (sVal=="none")
 	const makeAnnotations = d3.annotation()
 	  .annotations(annotations);
 	d3.select("svg")
-	  .append("g")
+	  .append("g").attr("id","the_SVG_ID1")
 	  .call(makeAnnotations);
 	  
 	const arrow1 = [
@@ -245,7 +245,7 @@ if (sVal=="none")
    	const makeArrow1 = d3.annotation()
    	  .annotations(arrow1);
    	d3.select("svg")
-   	  .append("g")
+   	  .append("g").attr("id","the_SVG_ID2")
    	  .call(makeArrow1);
 
 	const ant_low = [
@@ -282,7 +282,7 @@ if (sVal=="none")
    	  .annotations(ant_low);
  	  
    	d3.select("svg")
-   	  .append("g")
+   	  .append("g").attr("id","the_SVG_ID3")
    	  .call(makeLowerAnnotations);
 	         	  
 	d3.select('svg').append("g")
@@ -321,7 +321,10 @@ if (sVal=="none")
 	
 }
 else{
-	disable();	
+	disable();
+	d3.select("#the_SVG_ID1").remove();
+	d3.select("#the_SVG_ID2").remove();	
+	d3.select("#the_SVG_ID3").remove();		
 	var svgContainer = d3.select("svg").select("g").append("text");
 	var dt1,ac1,ra1;
 
