@@ -29,7 +29,7 @@ console.log("script"+state1);
    <script>
     // Storing state for heading
     var codeBlock = '<div class="text1">' +
-                        '<h3>' + state1 + ' State Debt & Population</h3>' +
+                        '<h3>' + state1 + ' State Economy</h3>' +
                     '</div>';
     
     // Inserting the code block to wrapper element
@@ -40,23 +40,7 @@ console.log("script"+state1);
 
 <div class="rightnext">
 		<input id ="b1" type="button" onclick="homePage();" style="float:right" class="button" value=" Complete ">
-		 <br> <br> <br> <br>
-		<p class="text1">
-		Whole layout described with a  Scatter plot to have gist of Covid financial impact in USA and two Bar 
-		charts to dig into the details by Covid-19 cases and financial details respectively.
-	
-	First, Scatter plot chart on the left, gives overview of all states representing Covid deaths occurred 
-	against debt of a state. Position on a circle indicates how the state is effected by Covid deaths against 
-	debt of a state. Which implies that one on the top right extreme has impacted by Covid badly.In addition, 
-	the size of the circle resembles active Covid cases of given state. Which means, the larger the size represent 
-	more number of active cases and smaller the circle size indicates lesser no of active cases in a state.
-	Secondly, The Bar chart on the top right provides specific information about a state Covid cases information 
-	with "Deaths", "Confirmed" and "Active" numbers and can be easily compared with other states. 
-	The right bottom Bar chart shows state specific details about economical position a state with "State and Local Debt%", 
-	"Real State Growth %"  and "Gross State Product". Bar chats with size, unique color per category with values
-	 helps to compare each state with others
-		
-		</p>
+
 </div>
 
 <svg width=900 height=330>
@@ -149,7 +133,7 @@ d3.select("svg")
 const ant_low = [
     {
       note: {
-        title: "States with less popopulation and Debt",
+        title: "States with less Popopulation and Debt",
         align: "left",
         wrap: 180,
         padding: 5

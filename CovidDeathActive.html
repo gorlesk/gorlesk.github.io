@@ -37,19 +37,10 @@ console.log("script"+state1);
 
 <div class="rightnext">
 		<input id ="b1" type="button" onclick="NextPage();" style="float:right" class="button" value=" Continue ">
+		<input id ="b2"  type="button" class="button button5" onclick="enable()" style="float:right" value=" Srart Over ">
+		
 		<div >
 		<p class="content">
-		Whole layout described with a  Scatter plot to have gist of Covid financial impact in USA and two Bar 
-		charts to dig into the details by Covid-19 cases and financial details respectively.
-	
-	First, Scatter plot chart on the left, gives overview of all states representing Covid deaths occurred 
-	against debt of a state. Position on a circle indicates how the state is effected by Covid deaths against 
-	debt of a state. Which implies that one on the top right extreme has impacted by Covid badly.In addition, 
-	the size of the circle resembles active Covid cases of given state. Which means, the larger the size represent 
-	more number of active cases and smaller the circle size indicates lesser no of active cases in a state.
-	Secondly, The Bar chart on the top right provides specific information about a state Covid cases information 
-	with "Deaths", "Confirmed" and "Active" numbers and can be easily compared.
-		
 		</p>
 		</div>
 </div>	
@@ -59,7 +50,9 @@ console.log("script"+state1);
 <script>
 
 /**/
-
+function enable() {
+	window.top.location.href="index.html";	  
+}
 
 console.log(">> ");
 const queryString = window.location.search;
@@ -148,7 +141,7 @@ d3.select("svg")
 const ant_low = [
     {
       note: {
-        title: "Less positives and fatality States",
+        title: "States with less Covid positives and fatalities",
         align: "center",
         wrap: 250,
         padding: 5
